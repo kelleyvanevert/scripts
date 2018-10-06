@@ -1,0 +1,25 @@
+#!/bin/bash
+
+next() {
+    local foundcwd=
+    local cwd=${PWD##*/}
+    if [[ -z $cwd ]]; then
+        # $PWD must be /
+        echo 'No next directory.' >&2
+        return 1
+    fi
+    for x in ../*/; do
+        if [[ -n $foundcwd ]]; then
+            if [[ -d $x ]]; then
+                cd "$x"
+                return
+            fi
+        elif [[ ${x#../} == ${cwd}/ ]]; then
+            foundcwd=1
+        fi
+    done
+    echo 'No next directory.' >&2
+    return 1
+}
+
+next
